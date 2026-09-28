@@ -81,11 +81,11 @@ test('unique slug of empty text is just the number, without a leading separator'
 test('a max length of zero disables the limit', function (): void {
     $title = str_repeat('আমার সোনার বাংলা ', 10);
 
-    expect(new BanglaSlug(maxLength: 0)->generate($title))->toBe(Str::slug(str_repeat('amar sonar bangla ', 10)));
+    expect((new BanglaSlug(maxLength: 0))->generate($title))->toBe(Str::slug(str_repeat('amar sonar bangla ', 10)));
 });
 
 test('the length limit works without a separator', function (): void {
-    expect(new BanglaSlug(maxLength: 10)->generate('আমার সোনার বাংলা', ''))->toBe('amarsonarb');
+    expect((new BanglaSlug(maxLength: 10))->generate('আমার সোনার বাংলা', ''))->toBe('amarsonarb');
 });
 
 test('custom separator is used', function (): void {
