@@ -14,7 +14,7 @@ test('bangla text is transliterated phonetically', function (string $text, strin
     'bangla digits' => ['রাস্তা ২০২৫', 'rasta-2025'],
     'decomposed nukta letters' => ["দুনি\u{09AF}\u{09BC}া", 'duniya'],
     'special conjunct kkh' => ['শিক্ষা প্রতিষ্ঠান', 'shikkha-pratishthan'],
-    'unknown words still transliterated' => ['রক্তদান কর্মসূচি', 'raktadan-karmasuchi'],
+    'unknown words still transliterated' => ['রক্তদান কর্মসূচি', 'roktodan-karmasuchi'],
     'zero-width joiners ignored' => ["র\u{200D}্যাব খবর", 'rab-khobor'],
 ]);
 
@@ -27,7 +27,7 @@ test('conjuncts and phala follow spoken bangla', function (string $text, string 
     'ba-phala as w' => ['স্বাধীন বিশ্ব', 'swadhin-bishwa'],
     'ra-phala ending keeps its vowel' => ['কেন্দ্র', 'kendra'],
     'doubled consonant ending keeps its vowel' => ['অন্ন', 'anna'],
-    'vowel kept before a conjunct' => ['কর্মকর্তা', 'karmakarta'],
+    'vowel kept before a conjunct' => ['কর্মচারী', 'karmachari'],
     'a-phala spelling of english a' => ['অ্যাসিড', 'asid'],
     'standalone a uses the same vowel as the inherent one' => ['অমর', 'amar'],
     'anusvara before ka' => ['ব্যাংক', 'bank'],
@@ -39,6 +39,8 @@ test('known words use their fixed spelling, including with suffixes', function (
     'place and loanwords' => ['গাজীপুর সদর হাসপাতাল', 'gazipur-sadar-hospital'],
     'known word with suffix' => ['গাজীপুরের সেরা ক্লিনিক', 'gazipurer-sera-clinic'],
     'short known word does not split a longer word' => ['আজমপুর', 'ajampur'],
+    'common word with o sound' => ['ধান গবেষণা ইনস্টিটিউট', 'dhan-gobeshona-institute'],
+    'common word with suffix' => ['কর্মকর্তার কার্যালয়', 'kormokortar-office'],
     'loanword spelled with a-phala' => ['অ্যাম্বুলেন্স', 'ambulance'],
 ]);
 
@@ -55,7 +57,7 @@ test('english letter names are read as acronyms and initials', function (string 
 test('a bracketed name that repeats the words before it is dropped', function (string $text, string $expected): void {
     expect(resolve(BanglaSlug::class)->generate($text))->toBe($expected);
 })->with([
-    'english acronym after its bangla spelling' => ['ইউসিসি (UCC) বিশ্ববিদ্যালয় ভর্তি কোচিং', 'ucc-university-bharti-coaching'],
+    'english acronym after its bangla spelling' => ['ইউসিসি (UCC) বিশ্ববিদ্যালয় ভর্তি কোচিং', 'ucc-university-bhorti-coaching'],
     'english brand after its bangla spelling' => ['মানিগ্রাম (MoneyGram) সার্ভিস', 'moneygram-service'],
     'different bracketed text is kept' => ['রাজা রাজেন্দ্র নারায়ণ (আর.আর.এন.) স্কুল', 'raja-rajendra-narayan-r-r-n-school'],
     'repeated honorific is kept' => ['শ্রী শ্রী কালী মন্দির', 'sree-sree-kali-mandir'],
