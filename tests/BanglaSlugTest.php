@@ -52,6 +52,15 @@ test('english letter names are read as acronyms and initials', function (string 
     'lone letter name stays a word' => ['আর', 'ar'],
 ]);
 
+test('a bracketed name that repeats the words before it is dropped', function (string $text, string $expected): void {
+    expect(resolve(BanglaSlug::class)->generate($text))->toBe($expected);
+})->with([
+    'english acronym after its bangla spelling' => ['ইউসিসি (UCC) বিশ্ববিদ্যালয় ভর্তি কোচিং', 'ucc-university-bharti-coaching'],
+    'english brand after its bangla spelling' => ['মানিগ্রাম (MoneyGram) সার্ভিস', 'moneygram-service'],
+    'different bracketed text is kept' => ['রাজা রাজেন্দ্র নারায়ণ (আর.আর.এন.) স্কুল', 'raja-rajendra-narayan-r-r-n-school'],
+    'repeated honorific is kept' => ['শ্রী শ্রী কালী মন্দির', 'sree-sree-kali-mandir'],
+]);
+
 test('english text is slugged exactly like str slug', function (string $text): void {
     expect(resolve(BanglaSlug::class)->generate($text))->toBe(Str::slug($text));
 })->with(['Gazipur City Hospital & Clinic', 'Hello World 2025', 'already-a-slug']);

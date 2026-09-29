@@ -120,7 +120,25 @@ class BanglaSlug
             $text,
         );
 
-        return $this->limitLength(Str::slug(str_replace('/', ' ', $transliterated), $separator), $separator);
+        return $this->limitLength(Str::slug(str_replace('/', ' ', $this->dropRepeatedParentheticals($transliterated)), $separator), $separator);
+    }
+
+    /**
+     * "ইউসিসি (UCC)" reads as "ucc (UCC)"; a bracketed part that repeats the words before it is dropped.
+     */
+    private function dropRepeatedParentheticals(string $text): string
+    {
+        return (string) preg_replace_callback(
+            '/\(([^()]*)\)/u',
+            function (array $match) use ($text): string {
+                $inner = Str::slug($match[1][0]);
+                $before = Str::slug(substr($text, 0, $match[0][1]));
+
+                return $inner !== '' && ($before === $inner || str_ends_with($before, '-'.$inner)) ? ' ' : $match[0][0];
+            },
+            $text,
+            flags: PREG_OFFSET_CAPTURE,
+        );
     }
 
     /**
