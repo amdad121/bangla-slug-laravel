@@ -13,7 +13,7 @@ test('bangla text is transliterated phonetically', function (string $text, strin
     'medial schwa dropped between voiced syllables' => ['কলকাতা', 'kalkata'],
     'bangla digits' => ['রাস্তা ২০২৫', 'rasta-2025'],
     'decomposed nukta letters' => ["দুনি\u{09AF}\u{09BC}া", 'duniya'],
-    'special conjunct kkh' => ['শিক্ষা প্রতিষ্ঠান', 'shikkha-pratishthan'],
+    'special conjunct kkh' => ['শিক্ষা প্রতিযোগিতা', 'shikkha-pratijogita'],
     'unknown words still transliterated' => ['রক্তদান কর্মসূচি', 'roktodan-karmasuchi'],
     'zero-width joiners ignored' => ["র\u{200D}্যাব খবর", 'rab-khobor'],
 ]);
@@ -23,7 +23,7 @@ test('conjuncts and phala follow spoken bangla', function (string $text, string 
 })->with([
     'word-initial ya-phala before aa is silent' => ['ব্যাগ', 'bag'],
     'ya-phala otherwise is a y-glide' => ['ব্যবসায়ী', 'byabsayi'],
-    'medial ya-phala is voiced' => ['বিদ্যা', 'bidya'],
+    'medial ya-phala is voiced' => ['বিদ্যুত', 'bidyut'],
     'ba-phala as w' => ['স্বাধীন বিশ্ব', 'swadhin-bishwa'],
     'ra-phala ending keeps its vowel' => ['কেন্দ্র', 'kendra'],
     'doubled consonant ending keeps its vowel' => ['অন্ন', 'anna'],
@@ -31,6 +31,9 @@ test('conjuncts and phala follow spoken bangla', function (string $text, string 
     'a-phala spelling of english a' => ['অ্যাসিড', 'asid'],
     'standalone a uses the same vowel as the inherent one' => ['অমর', 'amar'],
     'anusvara before ka' => ['ব্যাংক', 'bank'],
+    'native final conjunct stays voiced' => ['কৃষ্ণ দুর্গ', 'krishna-durga'],
+    'loanword final conjunct stays silent' => ['পোস্ট', 'post'],
+    'ba after ra or ba is not a w' => ['জব্বার পূর্বাচল', 'jabbar-purbachal'],
     'word-initial kkha is a single kh' => ['ক্ষেত শিক্ষা', 'khet-shikkha'],
 ]);
 
@@ -49,12 +52,16 @@ test('known words use their fixed spelling, including with suffixes', function (
 test('english letter names are read as acronyms and initials', function (string $text, string $expected): void {
     expect(resolve(BanglaSlug::class)->generate($text))->toBe($expected);
 })->with([
-    'acronyms' => ['জরুরি এসি অ্যান্ড ফ্রিজিং অ্যাম্বুলেন্স ২৪/৭', 'jaruri-ac-and-freezing-ambulance-24-7'],
+    'acronyms' => ['জরুরি এসি অ্যান্ড ফ্রিজিং অ্যাম্বুলেন্স ২৪/৭', 'joruri-ac-and-freezing-ambulance-24-7'],
     'multi-letter acronym' => ['আইসিইউ এমসিডব্লিউসি', 'icu-mcwc'],
     'known word wins over acronym' => ['জিএমপি সিটি', 'gmp-city'],
-    'dotted initials' => ['আর. এম. বিদ্যাপীঠ', 'r-m-bidyapith'],
+    'dotted initials' => ['আর. এম. বিদ্যাপীঠ', 'r-m-biddyapith'],
     'lone letter name stays a word' => ['আর', 'ar'],
     'last initial without a trailing dot' => ['এস. ডি.পি', 's-d-p'],
+    'letter names that are not words read as letters' => ['এম এ মজিদ', 'm-a-majid'],
+    'run of initials with an ambiguous letter name' => ['ডা. এ কে এম সাইফুল', 'dr-a-k-m-saiful'],
+    'run of ambiguous letter names stays words' => ['আর কে মিশন', 'ar-ke-mission'],
+    'possessive s joins the word' => ['সুলতান’স ডাইন', 'sultans-dine'],
 ]);
 
 test('a bracketed name that repeats the words before it is dropped', function (string $text, string $expected): void {

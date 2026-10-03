@@ -86,8 +86,23 @@ class BanglaSlug
         'এ' => 'a', 'ই' => 'e', 'ও' => 'o',
     ];
 
+    /**
+     * Letter names that are not Bangla words, so they read as a letter even on their own (এম → m).
+     *
+     * @var list<string>
+     */
+    private const array UNAMBIGUOUS_LETTER_NAMES = ['ডব্লিউ', 'এইচ', 'এক্স', 'কিউ', 'এফ', 'জেড', 'এল', 'এম', 'এন', 'এস'];
+
     /** @var list<string> */
     private const array PHALAS = ['য', 'ব', 'র'];
+
+    /**
+     * Consonants that end native conjuncts, which stay voiced at the end of a word (আনন্দ → ananda);
+     * English loanwords end in the others (পোস্ট → post).
+     *
+     * @var list<string>
+     */
+    private const array VOICED_FINALS = ['ত', 'থ', 'দ', 'ধ', 'ন', 'ণ', 'ঠ', 'ঢ', 'শ', 'ষ', 'গ', 'ঘ', 'ভ', 'ম'];
 
     /** @var array<string, string> */
     private readonly array $words;
@@ -113,18 +128,41 @@ class BanglaSlug
     public function generate(string $text, string $separator = '-'): string
     {
         $text = strtr($this->normalize(mb_scrub($text, 'UTF-8')), self::DIGITS);
+        $text = $this->dotInitialsAfterLetterNames($text);
 
         $transliterated = (string) preg_replace_callback(
-            '/([\x{0980}-\x{09FF}]+)(\.?)/u',
+            '/([\x{0980}-\x{09FF}]+)([\'’]স(?![\x{0980}-\x{09FF}]))?(\.?)/u',
             fn (array $match): string => ' '.$this->transliterate(
                 $match[1][0],
-                $match[2][0] === '.' || substr($text, max($match[0][1] - 1, 0), 1) === '.',
-            ).' ',
+                $match[3][0] === '.' || substr($text, max($match[0][1] - 1, 0), 1) === '.',
+            ).($match[2][0] === '' ? '' : 's').' ',
             $text,
             flags: PREG_OFFSET_CAPTURE,
         );
 
         return $this->limitLength(Str::slug(str_replace('/', ' ', $this->dropRepeatedParentheticals($transliterated)), $separator), $separator);
+    }
+
+    /**
+     * A run of letter names with at least one that is not a Bangla word is a run of initials
+     * (এ কে এম → a k m, not e ke m).
+     */
+    private function dotInitialsAfterLetterNames(string $text): string
+    {
+        $bangla = '[\x{0980}-\x{09FF}]';
+        $name = '(?:'.implode('|', array_map(preg_quote(...), array_keys(self::LETTER_NAMES))).')';
+
+        return (string) preg_replace_callback(
+            "/(?<!{$bangla})(?:{$name}\\.?\\s+)+{$name}(?!{$bangla})/u",
+            function (array $match): string {
+                $names = preg_split('/\.?\s+/u', $match[0]) ?: [];
+
+                return array_intersect($names, self::UNAMBIGUOUS_LETTER_NAMES) === []
+                    ? $match[0]
+                    : implode('. ', $names).(str_ends_with($match[0], '.') ? '' : '.');
+            },
+            $text,
+        );
     }
 
     /**
@@ -180,7 +218,7 @@ class BanglaSlug
     {
         $letters = $this->spellLetterNames($word);
 
-        if ($isDotted && $letters !== null && strlen($letters) === 1) {
+        if ($letters !== null && strlen($letters) === 1 && ($isDotted || in_array($word, self::UNAMBIGUOUS_LETTER_NAMES, true))) {
             return $letters;
         }
 
@@ -337,7 +375,7 @@ class BanglaSlug
     }
 
     /**
-     * Word-final phala and doubled-consonant clusters are still voiced (কেন্দ্র → kendra, অন্ন → anna).
+     * Word-final phala, doubled-consonant and native conjunct clusters are still voiced (কেন্দ্র → kendra, অন্ন → anna, স্বপ্ন → swapna).
      *
      * @param  list<string>  $cluster
      */
@@ -345,7 +383,12 @@ class BanglaSlug
     {
         [$previous, $last] = array_slice([null, ...$cluster], -2);
 
-        return $previous !== null && (in_array($last, self::PHALAS, true) || $last === $previous || $previous.$last === 'চছ');
+        return $previous !== null && (
+            in_array($last, self::PHALAS, true)
+            || in_array($last, self::VOICED_FINALS, true)
+            || $last === $previous
+            || in_array($previous.$last, ['চছ', 'কষ', 'লপ'], true)
+        );
     }
 
     /**
@@ -371,7 +414,7 @@ class BanglaSlug
             $sound .= match (true) {
                 $index === 0 => self::CONSONANTS[$cluster[$index]],
                 $cluster[$index] === 'য' => $isWordInitial && $vowel === 'a' ? '' : 'y',
-                $cluster[$index] === 'ব' && $cluster[$index - 1] !== 'ম' => 'w',
+                $cluster[$index] === 'ব' && ! in_array($cluster[$index - 1], ['ম', 'র', 'ব', 'ল'], true) => 'w',
                 default => self::CONSONANTS[$cluster[$index]],
             };
         }
