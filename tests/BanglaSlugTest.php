@@ -31,6 +31,7 @@ test('conjuncts and phala follow spoken bangla', function (string $text, string 
     'a-phala spelling of english a' => ['অ্যাসিড', 'asid'],
     'standalone a uses the same vowel as the inherent one' => ['অমর', 'amar'],
     'anusvara before ka' => ['ব্যাংক', 'bank'],
+    'word-initial kkha is a single kh' => ['ক্ষেত শিক্ষা', 'khet-shikkha'],
 ]);
 
 test('known words use their fixed spelling, including with suffixes', function (string $text, string $expected): void {
@@ -40,6 +41,7 @@ test('known words use their fixed spelling, including with suffixes', function (
     'known word with suffix' => ['গাজীপুরের সেরা ক্লিনিক', 'gazipurer-sera-clinic'],
     'short known word does not split a longer word' => ['আজমপুর', 'ajampur'],
     'common word with o sound' => ['ধান গবেষণা ইনস্টিটিউট', 'dhan-gobeshona-institute'],
+    'common word starting with kkha' => ['ক্ষুদ্র ময়দান', 'khudro-moydan'],
     'common word with suffix' => ['কর্মকর্তার কার্যালয়', 'kormokortar-office'],
     'loanword spelled with a-phala' => ['অ্যাম্বুলেন্স', 'ambulance'],
 ]);
@@ -52,6 +54,7 @@ test('english letter names are read as acronyms and initials', function (string 
     'known word wins over acronym' => ['জিএমপি সিটি', 'gmp-city'],
     'dotted initials' => ['আর. এম. বিদ্যাপীঠ', 'r-m-bidyapith'],
     'lone letter name stays a word' => ['আর', 'ar'],
+    'last initial without a trailing dot' => ['এস. ডি.পি', 's-d-p'],
 ]);
 
 test('a bracketed name that repeats the words before it is dropped', function (string $text, string $expected): void {

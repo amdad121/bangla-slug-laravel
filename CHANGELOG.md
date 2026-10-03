@@ -2,6 +2,11 @@
 
 All notable changes to `bangla-slug-laravel` will be documented in this file.
 
+## 1.0.3 - 2026-10-03
+
+- A letter name right after a dot is read as an initial even without a trailing dot (এস. ডি.পি → s-d-p).
+- Word-initial ক্ষ is `kh` instead of `kkh` (ক্ষেত → khet); added ক্ষুদ্র → khudro and ময়দান → moydan.
+
 ## 1.0.2 - 2026-09-29
 
 - Common Bangla words use natural Banglish spellings (গবেষণা → gobeshona, কর্মকর্তা → kormokorta, পূর্ব → purbo, ড. → dr).

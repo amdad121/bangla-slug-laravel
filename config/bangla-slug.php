@@ -33,6 +33,8 @@ return [
         'বাংলাদেশ' => 'bangladesh',
 
         // Common words
+        'ময়দান' => 'moydan',
+        'ক্ষুদ্র' => 'khudro',
         'সদর' => 'sadar',
         'বাজার' => 'bazar',
         'রোড' => 'road',

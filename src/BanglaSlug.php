@@ -116,8 +116,12 @@ class BanglaSlug
 
         $transliterated = (string) preg_replace_callback(
             '/([\x{0980}-\x{09FF}]+)(\.?)/u',
-            fn (array $match): string => ' '.$this->transliterate($match[1], $match[2] === '.').' ',
+            fn (array $match): string => ' '.$this->transliterate(
+                $match[1][0],
+                $match[2][0] === '.' || substr($text, max($match[0][1] - 1, 0), 1) === '.',
+            ).' ',
             $text,
+            flags: PREG_OFFSET_CAPTURE,
         );
 
         return $this->limitLength(Str::slug(str_replace('/', ' ', $this->dropRepeatedParentheticals($transliterated)), $separator), $separator);
@@ -168,15 +172,15 @@ class BanglaSlug
     }
 
     /**
-     * First match wins: a dotted initial (আর. → r), a known word (with or without a suffix),
+     * First match wins: a dotted initial (আর. → r, ডি.পি → d p), a known word (with or without a suffix),
      * an acronym of two or more letter names (জিএমপি → gmp), then phonetic transliteration.
      * A lone letter name is not an acronym, since most are also real words (আর, কে, ও).
      */
-    private function transliterate(string $word, bool $isFollowedByDot): string
+    private function transliterate(string $word, bool $isDotted): string
     {
         $letters = $this->spellLetterNames($word);
 
-        if ($isFollowedByDot && $letters !== null && strlen($letters) === 1) {
+        if ($isDotted && $letters !== null && strlen($letters) === 1) {
             return $letters;
         }
 
@@ -358,7 +362,7 @@ class BanglaSlug
             $conjunct = self::CONJUNCTS[$cluster[$index].self::HASANTA.($cluster[$index + 1] ?? '')] ?? null;
 
             if ($conjunct !== null) {
-                $sound .= $conjunct;
+                $sound .= $isWordInitial && $index === 0 && $conjunct === 'kkh' ? 'kh' : $conjunct;
                 $index++;
 
                 continue;
