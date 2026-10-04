@@ -2,6 +2,10 @@
 
 All notable changes to `bangla-slug-laravel` will be documented in this file.
 
+## 1.0.5 - 2026-10-04
+
+- Alternate spellings of common loanwords (ইন্সটিটিউট → institute, ষ্টেশন → station, মেডিক্যাল → medical, লিঃ → ltd).
+
 ## 1.0.4 - 2026-10-03
 
 - Runs of initials without dots are read as letters when one of them is not a Bangla word (এ কে এম → a-k-m).

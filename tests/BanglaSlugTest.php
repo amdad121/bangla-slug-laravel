@@ -46,6 +46,7 @@ test('known words use their fixed spelling, including with suffixes', function (
     'common word with o sound' => ['ধান গবেষণা ইনস্টিটিউট', 'dhan-gobeshona-institute'],
     'common word starting with kkha' => ['ক্ষুদ্র ময়দান', 'khudro-moydan'],
     'common word with suffix' => ['কর্মকর্তার কার্যালয়', 'kormokortar-office'],
+    'alternate loanword spelling' => ['মাস্টার আইটি টেকনিক্যাল ইন্সটিটিউট', 'master-it-technical-institute'],
     'loanword spelled with a-phala' => ['অ্যাম্বুলেন্স', 'ambulance'],
 ]);
 
