@@ -2,6 +2,14 @@
 
 All notable changes to `bangla-slug-laravel` will be documented in this file.
 
+## Unreleased
+
+- `য়` after a standalone ও or উ is `w` (দেওয়ান → dewan, সরওয়ার → sarwar, আউয়াল → awal).
+- `য়` after an o or u vowel sign is silent (নোয়াপাড়া → noapara, ডুয়েট → duet, ধানুয়া → dhanua).
+- A word-initial ই before `য়` is dropped (ইয়াসমিন → yasmin).
+- A consonant before a standalone ই keeps its vowel (বাড়ইবাড়ী → baraibari).
+- Added সৈয়দ → syed, সৈয়দা → syeda and আনোয়ার → anwar.
+
 ## 1.0.5 - 2026-10-04
 
 - Alternate spellings of common loanwords (ইন্সটিটিউট → institute, ষ্টেশন → station, মেডিক্যাল → medical, লিঃ → ltd).

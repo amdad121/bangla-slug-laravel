@@ -35,6 +35,11 @@ test('conjuncts and phala follow spoken bangla', function (string $text, string 
     'loanword final conjunct stays silent' => ['পোস্ট', 'post'],
     'ba after ra or ba is not a w' => ['জব্বার পূর্বাচল', 'jabbar-purbachal'],
     'word-initial kkha is a single kh' => ['ক্ষেত শিক্ষা', 'khet-shikkha'],
+    'ya after a standalone o or u is a w' => ['দেওয়ান সরওয়ার আউয়াল', 'dewan-sarwar-awal'],
+    'ya after an o or u vowel sign is silent' => ['নোয়াপাড়া ডুয়েট ধানুয়া', 'noapara-duet-dhanua'],
+    'standalone u after a consonant stays a separate sound' => ['তাজউদ্দীন', 'tajuddin'],
+    'word-initial i before ya is absorbed' => ['ইয়াসমিন', 'yasmin'],
+    'consonant before a standalone vowel keeps its vowel' => ['বাড়ইবাড়ী', 'baraibari'],
 ]);
 
 test('known words use their fixed spelling, including with suffixes', function (string $text, string $expected): void {
@@ -48,6 +53,7 @@ test('known words use their fixed spelling, including with suffixes', function (
     'common word with suffix' => ['কর্মকর্তার কার্যালয়', 'kormokortar-office'],
     'alternate loanword spelling' => ['মাস্টার আইটি টেকনিক্যাল ইন্সটিটিউট', 'master-it-technical-institute'],
     'loanword spelled with a-phala' => ['অ্যাম্বুলেন্স', 'ambulance'],
+    'common name spellings' => ['সৈয়দা আনোয়ার', 'syeda-anwar'],
 ]);
 
 test('english letter names are read as acronyms and initials', function (string $text, string $expected): void {

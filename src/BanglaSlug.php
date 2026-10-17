@@ -274,7 +274,7 @@ class BanglaSlug
      */
     private function transliteratePhonetically(string $word): string
     {
-        $syllables = $this->syllables(mb_str_split($word));
+        $syllables = $this->softenYaGlides($this->syllables(mb_str_split($word)));
         $lastIndex = count($syllables) - 1;
         $result = '';
 
@@ -286,7 +286,8 @@ class BanglaSlug
                     ? ! $syllable['keepsFinalVowel']
                     : ! $syllable['conjunct']
                         && $syllables[$index - 1]['voiced']
-                        && $next !== null && $next['vowel'] !== null && ! $next['coda'] && ! $next['conjunct']);
+                        && $next !== null && $next['vowel'] !== null && ! $next['coda'] && ! $next['conjunct']
+                        && ! ($next['sound'] === '' && $next['vowel'] === 'i'));
 
                 $syllable['vowel'] = $dropsVowel ? '' : self::INHERENT_VOWEL;
                 $syllables[$index]['voiced'] = ! $dropsVowel;
@@ -296,6 +297,47 @@ class BanglaSlug
         }
 
         return str_replace('ngk', 'nk', $result);
+    }
+
+    /**
+     * য় before a vowel sign is a w after a standalone ও or উ, which then falls silent (দেওয়ান → dewan),
+     * is silent after an o or u vowel sign (নোয়াপাড়া → noapara, ডুয়েট → duet) and absorbs a
+     * word-initial ই (ইয়াসমিন → yasmin).
+     *
+     * @param  list<array{sound: string, vowel: ?string, voiced: bool, conjunct: bool, coda: bool, keepsFinalVowel: bool}>  $syllables
+     * @return list<array{sound: string, vowel: ?string, voiced: bool, conjunct: bool, coda: bool, keepsFinalVowel: bool}>
+     */
+    private function softenYaGlides(array $syllables): array
+    {
+        $softened = [];
+
+        foreach ($syllables as $index => $syllable) {
+            $isStandalone = $syllable['sound'] === '';
+            $previous = $syllables[$index - 1] ?? null;
+            $next = $syllables[$index + 1] ?? null;
+
+            if ($this->isVoicedGlide($syllable) && $previous !== null && in_array($previous['vowel'], ['o', 'u'], true)) {
+                $syllable['sound'] = $previous['sound'] === '' ? 'w' : '';
+            }
+
+            if ($isStandalone && $next !== null && $this->isVoicedGlide($next)
+                && (in_array($syllable['vowel'], ['o', 'u'], true) || ($index === 0 && $syllable['vowel'] === 'i'))) {
+                $syllable['vowel'] = '';
+                $syllable['voiced'] = false;
+            }
+
+            $softened[] = $syllable;
+        }
+
+        return $softened;
+    }
+
+    /**
+     * @param  array{sound: string, vowel: ?string, voiced: bool, conjunct: bool, coda: bool, keepsFinalVowel: bool}  $syllable
+     */
+    private function isVoicedGlide(array $syllable): bool
+    {
+        return $syllable['sound'] === 'y' && ! in_array($syllable['vowel'], [null, ''], true);
     }
 
     /**
