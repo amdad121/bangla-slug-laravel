@@ -2,7 +2,7 @@
 
 All notable changes to `bangla-slug-laravel` will be documented in this file.
 
-## Unreleased
+## 1.0.6 - 2026-10-17
 
 - `য়` after a standalone ও or উ is `w` (দেওয়ান → dewan, সরওয়ার → sarwar, আউয়াল → awal).
 - `য়` after an o or u vowel sign is silent (নোয়াপাড়া → noapara, ডুয়েট → duet, ধানুয়া → dhanua).
