@@ -53,6 +53,7 @@ test('known words use their fixed spelling, including with suffixes', function (
     'common word with suffix' => ['কর্মকর্তার কার্যালয়', 'kormokortar-office'],
     'alternate loanword spelling' => ['মাস্টার আইটি টেকনিক্যাল ইন্সটিটিউট', 'master-it-technical-institute'],
     'loanword spelled with a-phala' => ['অ্যাম্বুলেন্স', 'ambulance'],
+    'loanword brand name' => ['কোড অ্যাপিয়ার', 'code-appear'],
     'common name spellings' => ['সৈয়দা আনোয়ার', 'syeda-anwar'],
 ]);
 

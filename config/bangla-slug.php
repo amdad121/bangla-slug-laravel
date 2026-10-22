@@ -879,6 +879,8 @@ return [
         'কম্পিউটার' => 'computer',
         'সফটওয়্যার' => 'software',
         'অ্যাপ' => 'app',
+        'কোড' => 'code',
+        'অ্যাপিয়ার' => 'appear',
         'ওয়েবসাইট' => 'website',
 
         // Common words

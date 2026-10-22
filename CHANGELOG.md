@@ -2,6 +2,10 @@
 
 All notable changes to `bangla-slug-laravel` will be documented in this file.
 
+## 1.0.7 - 2026-10-22
+
+- Added কোড → code and অ্যাপিয়ার → appear (কোড অ্যাপিয়ার → code-appear).
+
 ## 1.0.6 - 2026-10-17
 
 - `য়` after a standalone ও or উ is `w` (দেওয়ান → dewan, সরওয়ার → sarwar, আউয়াল → awal).
